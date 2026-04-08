@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClipForge | Turn Long YouTube Videos Into Short Clips</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="eyebrow">YouTube Clip Splitter</div>
+        <h1>Turn long videos into clean short-form clips in one flow.</h1>
+        <p class="hero-copy">
+          Paste a YouTube link, choose a clip size, and let the backend download,
+          cut, and package the video for you.
+        </p>
+        <div class="hero-note">
+          Frontend is ready for Vercel. Point it to your Heroku backend in
+          <code>frontend/config.js</code>.
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2>Create clip job</h2>
+            <p>Choose one clip size for the full video split.</p>
+          </div>
+
+          <form id="clip-form" class="clip-form">
+            <label class="field">
+              <span>YouTube video link</span>
+              <input
+                id="youtube-url"
+                name="youtubeUrl"
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                required
+              />
+            </label>
+
+            <div class="preset-grid">
+              <label class="preset-card">
+                <input type="radio" name="segmentPreset" value="10s" checked />
+                <span class="preset-title">10s</span>
+                <span class="preset-copy">Fast cuts for reels and shorts</span>
+              </label>
+              <label class="preset-card">
+                <input type="radio" name="segmentPreset" value="30s" />
+                <span class="preset-title">30s</span>
+                <span class="preset-copy">Balanced chunks for previews</span>
+              </label>
+              <label class="preset-card">
+                <input type="radio" name="segmentPreset" value="5min" />
+                <span class="preset-title">5min</span>
+                <span class="preset-copy">Longer clips for highlights</span>
+              </label>
+            </div>
+
+            <button class="primary-button" type="submit" id="submit-button">
+              Start clipping
+            </button>
+          </form>
+        </section>
+
+        <aside class="panel status-panel">
+          <div class="panel-heading">
+            <h2>Backend status</h2>
+            <p>Vercel frontend talks to your Heroku API from here.</p>
+          </div>
+
+          <div id="api-target" class="system-status">
+            Reading frontend API configuration...
+          </div>
+
+          <div id="system-status" class="system-status loading">
+            Checking backend tools...
+          </div>
+
+          <div class="status-card">
+            <div class="status-label">Workflow</div>
+            <ol class="status-flow">
+              <li>Frontend sends job to Heroku backend</li>
+              <li>Backend downloads and cuts the video</li>
+              <li>User downloads ZIP package from backend</li>
+            </ol>
+          </div>
+        </aside>
+      </main>
+
+      <section class="panel results-panel">
+        <div class="panel-heading">
+          <h2>Job output</h2>
+          <p>Track the current processing job and download clips when ready.</p>
+        </div>
+
+        <div id="job-state" class="job-state empty">
+          No job yet. Paste a link above to generate short clips.
+        </div>
+
+        <div id="clip-results" class="clip-results hidden">
+          <div class="result-meta">
+            <div>
+              <div class="status-label">Video</div>
+              <div id="video-title" class="result-title">Preparing job</div>
+            </div>
+            <div>
+              <div class="status-label">Clips created</div>
+              <div id="clip-count" class="result-title">0</div>
+            </div>
+          </div>
+
+          <a id="download-link" class="download-button hidden" href="#">
+            Download ZIP package
+          </a>
+
+          <div id="clip-list" class="clip-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

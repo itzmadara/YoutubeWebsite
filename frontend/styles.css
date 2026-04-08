@@ -1,0 +1,334 @@
+:root {
+  --bg: #09111f;
+  --bg-soft: rgba(255, 255, 255, 0.06);
+  --bg-strong: rgba(10, 18, 33, 0.92);
+  --text: #f3f7ff;
+  --muted: #96a5c3;
+  --accent: #ff7a18;
+  --accent-2: #ffd166;
+  --border: rgba(255, 255, 255, 0.12);
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Manrope", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 24, 0.34), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 209, 102, 0.2), transparent 22%),
+    linear-gradient(135deg, #08111b 0%, #102038 52%, #0b1626 100%);
+  color: var(--text);
+}
+
+.page-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.hero {
+  padding: 24px 4px 40px;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--accent-2);
+  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 760px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 0.95;
+}
+
+.hero-copy {
+  max-width: 700px;
+  margin: 18px 0 0;
+  font-size: 1.06rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.hero-note {
+  margin-top: 20px;
+  display: inline-block;
+  padding: 12px 16px;
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffe8d1;
+}
+
+code {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 20px;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--bg-strong);
+  box-shadow: var(--shadow);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: auto -120px -140px auto;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(255, 122, 24, 0.18), transparent 70%);
+}
+
+.panel-heading {
+  padding: 28px 28px 10px;
+}
+
+.panel-heading h2 {
+  margin: 0 0 6px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.45rem;
+}
+
+.panel-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.clip-form {
+  padding: 8px 28px 28px;
+}
+
+.field {
+  display: block;
+}
+
+.field span {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font: inherit;
+}
+
+.field input:focus {
+  outline: 2px solid rgba(255, 122, 24, 0.7);
+  outline-offset: 3px;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0;
+}
+
+.preset-card {
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.preset-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 209, 102, 0.7);
+}
+
+.preset-card input {
+  display: none;
+}
+
+.preset-card:has(input:checked) {
+  border-color: rgba(255, 122, 24, 0.9);
+  background: linear-gradient(180deg, rgba(255, 122, 24, 0.22), rgba(255, 255, 255, 0.04));
+}
+
+.preset-title {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.4rem;
+}
+
+.preset-copy {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.primary-button,
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), #ff9b42);
+  color: #111;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.primary-button:hover,
+.download-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(255, 122, 24, 0.26);
+}
+
+.primary-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.system-status,
+.status-card,
+.job-state,
+.clip-list-item {
+  margin: 0 28px 20px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.system-status.success {
+  border-color: rgba(94, 227, 161, 0.4);
+  color: #d8fff0;
+}
+
+.system-status.warning {
+  border-color: rgba(255, 127, 127, 0.4);
+  color: #ffe4e4;
+}
+
+.status-label {
+  margin-bottom: 8px;
+  color: var(--accent-2);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-flow {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.results-panel {
+  margin-top: 22px;
+}
+
+.job-state {
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.job-state.running {
+  border-color: rgba(255, 209, 102, 0.45);
+}
+
+.job-state.completed {
+  border-color: rgba(94, 227, 161, 0.45);
+}
+
+.job-state.failed {
+  border-color: rgba(255, 127, 127, 0.45);
+}
+
+.clip-results {
+  padding: 0 28px 28px;
+}
+
+.clip-results.hidden,
+.download-button.hidden {
+  display: none;
+}
+
+.result-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.result-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.3rem;
+}
+
+.clip-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.clip-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clip-name {
+  font-weight: 700;
+}
+
+.clip-size {
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .grid,
+  .result-meta,
+  .preset-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-shell {
+    width: min(100% - 20px, 1120px);
+    padding-top: 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 12vw, 4rem);
+  }
+}
