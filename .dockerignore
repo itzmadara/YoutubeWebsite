@@ -1,0 +1,7 @@
+.git
+__pycache__/
+tests/__pycache__/
+jobs/
+tmp/
+downloads/
+*.pyc

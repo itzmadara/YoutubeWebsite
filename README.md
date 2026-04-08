@@ -65,14 +65,15 @@ http://127.0.0.1:3000
 ## Deploy frontend to Vercel
 
 1. Import this repo into Vercel.
-2. Set the Root Directory to `frontend`.
-3. In [frontend/config.js](/Users/vikashkumar/YoutubeWebsite/frontend/config.js), replace `https://your-heroku-app.herokuapp.com` with your real Heroku backend URL.
-4. Deploy.
+2. In [frontend/config.js](/Users/vikashkumar/YoutubeWebsite/frontend/config.js), replace `https://your-heroku-app.herokuapp.com` with your real Heroku backend URL.
+3. Deploy.
+
+This repo now also includes a root-level [vercel.json](/Users/vikashkumar/YoutubeWebsite/vercel.json) so Vercel can deploy the `frontend/` app even if the project is pointed at the repository root.
 
 ## Deploy backend to Heroku
 
 1. Create a Heroku app from this repo.
-2. Heroku will use [Procfile](/Users/vikashkumar/YoutubeWebsite/Procfile) and [requirements.txt](/Users/vikashkumar/YoutubeWebsite/requirements.txt).
+2. This repo now includes both [Procfile](/Users/vikashkumar/YoutubeWebsite/Procfile) for buildpack-style deploys and [heroku.yml](/Users/vikashkumar/YoutubeWebsite/heroku.yml) with [Dockerfile](/Users/vikashkumar/YoutubeWebsite/Dockerfile) for container deploys.
 3. Set config vars:
 
 ```text
@@ -81,6 +82,8 @@ APP_BASE_URL=https://your-heroku-app.herokuapp.com
 ```
 
 4. Make sure `ffmpeg` is installed in the Heroku environment, otherwise clip jobs will fail with a clear dependency error.
+
+If your Heroku app is already configured for container deploys, the included `heroku.yml` fixes the "does not include a heroku.yml build manifest" error and installs `ffmpeg` inside the container image.
 
 ## Important trial note
 
