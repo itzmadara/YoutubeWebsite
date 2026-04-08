@@ -95,6 +95,14 @@ def get_yt_dlp_user_agent() -> str:
     return os.environ.get("YTDLP_USER_AGENT", "").strip()
 
 
+def get_yt_dlp_js_runtimes() -> str:
+    return os.environ.get("YTDLP_JS_RUNTIMES", "deno").strip()
+
+
+def get_yt_dlp_remote_components() -> str:
+    return os.environ.get("YTDLP_REMOTE_COMPONENTS", "ejs:github").strip()
+
+
 def resolve_cookies_file() -> str | None:
     cookies_b64 = os.environ.get("YTDLP_COOKIES_B64", "").strip()
     if cookies_b64:
@@ -120,6 +128,14 @@ def resolve_cookies_file() -> str | None:
 
 def get_yt_dlp_auth_args() -> list[str]:
     command_args: list[str] = []
+    js_runtimes = get_yt_dlp_js_runtimes()
+    if js_runtimes:
+        command_args.extend(["--js-runtimes", js_runtimes])
+
+    remote_components = get_yt_dlp_remote_components()
+    if remote_components:
+        command_args.extend(["--remote-components", remote_components])
+
     cookies_file = resolve_cookies_file()
     if cookies_file:
         command_args.extend(["--cookies", cookies_file])
@@ -165,7 +181,7 @@ def download_video(job_id: str, youtube_url: str, temp_dir: Path) -> tuple[bool,
         "yt-dlp",
         "--no-playlist",
         "-f",
-        "mp4/best[ext=mp4]/best",
+        "bv*+ba/b",
         "-o",
         output_template,
         *get_yt_dlp_auth_args(),
@@ -347,6 +363,8 @@ class AppHandler(BaseHTTPRequestHandler):
                     "youtubeAuth": {
                         "cookiesConfigured": resolve_cookies_file() is not None,
                         "userAgentConfigured": bool(get_yt_dlp_user_agent()),
+                        "jsRuntimes": get_yt_dlp_js_runtimes(),
+                        "remoteComponents": get_yt_dlp_remote_components(),
                     },
                     "presets": [
                         {"key": key, "seconds": value}

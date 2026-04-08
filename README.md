@@ -107,6 +107,20 @@ Recommended for Heroku:
 2. Base64 encode it.
 3. Put that value into `YTDLP_COOKIES_B64` in Heroku config vars.
 4. Optionally set `YTDLP_USER_AGENT` to your browser's user agent.
+5. Redeploy Heroku so the backend picks up the updated container image and config vars.
+
+## YouTube JS challenge runtime
+
+Recent yt-dlp YouTube extraction can also require a JavaScript runtime and EJS challenge components.
+
+This repo now defaults to:
+
+```text
+YTDLP_JS_RUNTIMES=deno
+YTDLP_REMOTE_COMPONENTS=ejs:github
+```
+
+The Heroku Docker image installs `deno`, and `yt-dlp[default]` is used so the backend is better aligned with current yt-dlp YouTube requirements.
 
 Important:
 
