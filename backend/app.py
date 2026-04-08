@@ -96,7 +96,7 @@ def get_yt_dlp_user_agent() -> str:
 
 
 def get_yt_dlp_js_runtimes() -> str:
-    return os.environ.get("YTDLP_JS_RUNTIMES", "deno").strip()
+    return os.environ.get("YTDLP_JS_RUNTIMES", "node").strip()
 
 
 def get_yt_dlp_remote_components() -> str:

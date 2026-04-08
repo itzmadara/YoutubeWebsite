@@ -116,11 +116,11 @@ Recent yt-dlp YouTube extraction can also require a JavaScript runtime and EJS c
 This repo now defaults to:
 
 ```text
-YTDLP_JS_RUNTIMES=deno
+YTDLP_JS_RUNTIMES=node
 YTDLP_REMOTE_COMPONENTS=ejs:github
 ```
 
-The Heroku Docker image installs `deno`, and `yt-dlp[default]` is used so the backend is better aligned with current yt-dlp YouTube requirements.
+The Heroku Docker image now installs Node 22, and `yt-dlp[default]` is used so the backend is better aligned with current yt-dlp YouTube requirements.
 
 Important:
 
