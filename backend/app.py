@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -18,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 JOBS_DIR = BASE_DIR / "jobs"
 DOWNLOADS_DIR = BASE_DIR / "downloads"
 TMP_DIR = BASE_DIR / "tmp"
+LOCAL_COOKIES_FILE = BASE_DIR / "backend" / "cookies.txt"
 
 SEGMENT_PRESETS = {
     "10s": 10,
@@ -89,6 +91,46 @@ def get_download_base_url() -> str:
     return ""
 
 
+def get_yt_dlp_user_agent() -> str:
+    return os.environ.get("YTDLP_USER_AGENT", "").strip()
+
+
+def resolve_cookies_file() -> str | None:
+    cookies_b64 = os.environ.get("YTDLP_COOKIES_B64", "").strip()
+    if cookies_b64:
+        cookie_path = TMP_DIR / "yt-dlp-cookies.txt"
+        cookie_path.write_text(base64.b64decode(cookies_b64).decode("utf-8"), encoding="utf-8")
+        return str(cookie_path)
+
+    cookies_content = os.environ.get("YTDLP_COOKIES_CONTENT", "")
+    if cookies_content.strip():
+        cookie_path = TMP_DIR / "yt-dlp-cookies.txt"
+        cookie_path.write_text(cookies_content, encoding="utf-8")
+        return str(cookie_path)
+
+    configured_file = os.environ.get("YTDLP_COOKIES_FILE", "").strip()
+    if configured_file and Path(configured_file).is_file():
+        return configured_file
+
+    if LOCAL_COOKIES_FILE.is_file():
+        return str(LOCAL_COOKIES_FILE)
+
+    return None
+
+
+def get_yt_dlp_auth_args() -> list[str]:
+    command_args: list[str] = []
+    cookies_file = resolve_cookies_file()
+    if cookies_file:
+        command_args.extend(["--cookies", cookies_file])
+
+    user_agent = get_yt_dlp_user_agent()
+    if user_agent:
+        command_args.extend(["--user-agent", user_agent])
+
+    return command_args
+
+
 def run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         command,
@@ -126,6 +168,7 @@ def download_video(job_id: str, youtube_url: str, temp_dir: Path) -> tuple[bool,
         "mp4/best[ext=mp4]/best",
         "-o",
         output_template,
+        *get_yt_dlp_auth_args(),
         youtube_url,
     ]
     result = run_command(command)
@@ -147,6 +190,7 @@ def fetch_video_title(youtube_url: str) -> str:
             "--dump-single-json",
             "--skip-download",
             "--no-playlist",
+            *get_yt_dlp_auth_args(),
             youtube_url,
         ]
     )
@@ -299,6 +343,10 @@ class AppHandler(BaseHTTPRequestHandler):
                     "dependencies": {
                         "ytDlp": check_dependency("yt-dlp"),
                         "ffmpeg": check_dependency("ffmpeg"),
+                    },
+                    "youtubeAuth": {
+                        "cookiesConfigured": resolve_cookies_file() is not None,
+                        "userAgentConfigured": bool(get_yt_dlp_user_agent()),
                     },
                     "presets": [
                         {"key": key, "seconds": value}

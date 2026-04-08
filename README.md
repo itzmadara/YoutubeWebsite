@@ -85,6 +85,35 @@ APP_BASE_URL=https://your-heroku-app.herokuapp.com
 
 If your Heroku app is already configured for container deploys, the included `heroku.yml` fixes the "does not include a heroku.yml build manifest" error and installs `ffmpeg` inside the container image.
 
+## YouTube cookies
+
+If YouTube asks to "Sign in to confirm you're not a bot", add cookies on the backend side, not on Vercel.
+
+Options:
+
+- Local development: put your exported Netscape-format cookies file at `backend/cookies.txt`
+- Heroku: set one of these config vars on the backend app
+
+```text
+YTDLP_COOKIES_B64=...
+YTDLP_COOKIES_CONTENT=...
+YTDLP_COOKIES_FILE=/absolute/path/to/cookies.txt
+YTDLP_USER_AGENT=your-browser-user-agent
+```
+
+Recommended for Heroku:
+
+1. Export your `cookies.txt` file from the browser.
+2. Base64 encode it.
+3. Put that value into `YTDLP_COOKIES_B64` in Heroku config vars.
+4. Optionally set `YTDLP_USER_AGENT` to your browser's user agent.
+
+Important:
+
+- Do not put cookies in the frontend.
+- Do not commit `backend/cookies.txt` to GitHub.
+- Browser cookies from your local machine may still be unreliable on Heroku because the requests come from a different server IP than your browser session.
+
 ## Important trial note
 
 This version is okay for trial hosting, but it still uses in-memory jobs and local file storage. On Heroku, jobs and ZIP files can disappear when the dyno restarts. For production, move job state to Redis or a database and store clips in S3 or another object store.
