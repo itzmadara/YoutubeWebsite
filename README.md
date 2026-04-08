@@ -68,7 +68,7 @@ http://127.0.0.1:3000
 2. In [frontend/config.js](/Users/vikashkumar/YoutubeWebsite/frontend/config.js), replace `https://your-heroku-app.herokuapp.com` with your real Heroku backend URL.
 3. Deploy.
 
-This repo now also includes a root-level [vercel.json](/Users/vikashkumar/YoutubeWebsite/vercel.json) so Vercel can deploy the `frontend/` app even if the project is pointed at the repository root.
+This repo now also includes a root-level [vercel.json](/Users/vikashkumar/YoutubeWebsite/vercel.json) that explicitly deploys only the static files from `frontend/`. This avoids Vercel trying to treat the repo as a Python app because of the separate `backend/` folder.
 
 ## Deploy backend to Heroku
 
