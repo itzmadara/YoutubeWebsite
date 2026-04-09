@@ -1,0 +1,17 @@
+[Unit]
+Description=ClipForge backend service
+After=network.target
+
+[Service]
+Type=simple
+User=clipforge
+Group=clipforge
+WorkingDirectory=/opt/clipforge/app
+EnvironmentFile=/opt/clipforge/app/deploy/clipforge.env
+ExecStart=/opt/clipforge/venv/bin/python /opt/clipforge/app/backend/app.py
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

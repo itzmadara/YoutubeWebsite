@@ -1,9 +1,9 @@
 # ClipForge
 
-ClipForge is now split for trial hosting:
+ClipForge is now split for deployment:
 
 - `frontend/` is a static site you can deploy to Vercel
-- `backend/` is a Python API you can deploy to Heroku
+- `backend/` is a Python API you can deploy to your VPS
 
 The app accepts a YouTube video URL and splits the full video into fixed clip sizes like `10s`, `30s`, or `5min`.
 
@@ -26,6 +26,10 @@ The app accepts a YouTube video URL and splits the full video into fixed clip si
 - `frontend/config.js`: frontend API URL configuration
 - `Procfile`: Heroku web command
 - `requirements.txt`: Python dependencies for Heroku
+- `deploy/clipforge.service`: `systemd` service for a VPS backend
+- `deploy/clipforge.env.example`: backend environment variables for a VPS
+- `deploy/nginx-clipforge.conf`: nginx reverse proxy example for a VPS
+- `deploy/vps-setup.sh`: starter script for installing VPS dependencies
 - `tests/test_app.py`: basic test coverage
 
 ## Requirements
@@ -65,12 +69,66 @@ http://127.0.0.1:3000
 ## Deploy frontend to Vercel
 
 1. Import this repo into Vercel.
-2. In [frontend/config.js](/Users/vikashkumar/YoutubeWebsite/frontend/config.js), replace `https://your-heroku-app.herokuapp.com` with your real Heroku backend URL.
+2. In [frontend/config.js](/Users/vikashkumar/YoutubeWebsite/frontend/config.js), replace the placeholder backend URL with your real VPS backend URL like `https://api.yourdomain.com`.
 3. Deploy.
 
 This repo now also includes a root-level [vercel.json](/Users/vikashkumar/YoutubeWebsite/vercel.json) that explicitly deploys only the static files from `frontend/`. This avoids Vercel trying to treat the repo as a Python app because of the separate `backend/` folder.
 
-## Deploy backend to Heroku
+## Deploy backend to a VPS
+
+Recommended stack:
+
+- Ubuntu VPS
+- Python 3 virtualenv
+- `ffmpeg`
+- Node 22
+- nginx
+- `systemd`
+
+Files provided:
+
+- [deploy/clipforge.service](/Users/vikashkumar/YoutubeWebsite/deploy/clipforge.service)
+- [deploy/clipforge.env.example](/Users/vikashkumar/YoutubeWebsite/deploy/clipforge.env.example)
+- [deploy/nginx-clipforge.conf](/Users/vikashkumar/YoutubeWebsite/deploy/nginx-clipforge.conf)
+- [deploy/vps-setup.sh](/Users/vikashkumar/YoutubeWebsite/deploy/vps-setup.sh)
+
+Typical VPS layout:
+
+```text
+/opt/clipforge/app
+/opt/clipforge/venv
+/opt/clipforge/secrets/cookies.txt
+```
+
+Typical VPS steps:
+
+1. Clone this repo to `/opt/clipforge/app`
+2. Run [deploy/vps-setup.sh](/Users/vikashkumar/YoutubeWebsite/deploy/vps-setup.sh)
+3. Copy [deploy/clipforge.env.example](/Users/vikashkumar/YoutubeWebsite/deploy/clipforge.env.example) to `deploy/clipforge.env`
+4. Edit `deploy/clipforge.env` with your real domain and frontend URL
+5. Put your private cookies file at `/opt/clipforge/secrets/cookies.txt`
+6. Copy [deploy/clipforge.service](/Users/vikashkumar/YoutubeWebsite/deploy/clipforge.service) to `/etc/systemd/system/clipforge.service`
+7. Enable and start the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable clipforge
+sudo systemctl start clipforge
+sudo systemctl status clipforge
+```
+
+8. Copy [deploy/nginx-clipforge.conf](/Users/vikashkumar/YoutubeWebsite/deploy/nginx-clipforge.conf) to `/etc/nginx/sites-available/clipforge`
+9. Enable nginx site and reload:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/clipforge /etc/nginx/sites-enabled/clipforge
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+10. Point your domain, for example `api.yourdomain.com`, to the VPS and add HTTPS with Let's Encrypt.
+
+## Heroku note
 
 1. Create a Heroku app from this repo.
 2. This repo now includes both [Procfile](/Users/vikashkumar/YoutubeWebsite/Procfile) for buildpack-style deploys and [heroku.yml](/Users/vikashkumar/YoutubeWebsite/heroku.yml) with [Dockerfile](/Users/vikashkumar/YoutubeWebsite/Dockerfile) for container deploys.
@@ -127,10 +185,11 @@ Important:
 - Do not put cookies in the frontend.
 - Do not commit `backend/cookies.txt` to GitHub.
 - Browser cookies from your local machine may still be unreliable on Heroku because the requests come from a different server IP than your browser session.
+- On a VPS, prefer `YTDLP_COOKIES_FILE=/opt/clipforge/secrets/cookies.txt` instead of storing cookies in app config vars.
 
-## Important trial note
+## Important hosting note
 
-This version is okay for trial hosting, but it still uses in-memory jobs and local file storage. On Heroku, jobs and ZIP files can disappear when the dyno restarts. For production, move job state to Redis or a database and store clips in S3 or another object store.
+This version is much better on a VPS than on Heroku, but it still uses in-memory jobs and local file storage. For production at larger scale, move job state to Redis or a database and store clips in S3 or another object store.
 
 ## Run tests
 
